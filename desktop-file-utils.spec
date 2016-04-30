@@ -4,7 +4,7 @@
 #
 Name     : desktop-file-utils
 Version  : 0.22
-Release  : 4
+Release  : 5
 URL      : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.22.tar.xz
 Source0  : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.22.tar.xz
 Summary  : No detailed summary available
