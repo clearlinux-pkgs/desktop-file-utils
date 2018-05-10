@@ -4,7 +4,7 @@
 #
 Name     : desktop-file-utils
 Version  : 0.23
-Release  : 8
+Release  : 9
 URL      : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz
 Source0  : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz
 Summary  : No detailed summary available
