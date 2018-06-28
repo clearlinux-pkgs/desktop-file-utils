@@ -1,0 +1,112 @@
+From 7878357ecd3a17d07b174101a10f73432b2dd987 Mon Sep 17 00:00:00 2001
+From: Josue David Hernandez <josue.d.hernandez.gutierrez@intel.com>
+Date: Thu, 28 Jun 2018 16:37:06 -0500
+Subject: [PATCH] update-desktop-database: add output option
+
+add output option to set the cache file in another folder
+
+Signed-off-by: Josue David Hernandez <josue.d.hernandez.gutierrez@intel.com>
+---
+ src/update-desktop-database.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
+
+diff --git a/src/update-desktop-database.c b/src/update-desktop-database.c
+index 7f48357..39c1106 100644
+--- a/src/update-desktop-database.c
++++ b/src/update-desktop-database.c
+@@ -50,7 +50,7 @@ static FILE *open_temp_cache_file (const char  *dir,
+                                    char       **filename,
+                                    GError     **error);
+ static void add_mime_type (const char *mime_type, GList *desktop_files, FILE *f);
+-static void sync_database (const char *dir, GError **error);
++static void sync_database (const char *dir, const char *output, GError **error);
+ static void cache_desktop_file (const char  *desktop_file,
+                                 const char  *mime_type,
+                                 GError     **error);
+@@ -60,7 +60,7 @@ static void process_desktop_file (const char  *desktop_file,
+ static void process_desktop_files (const char *desktop_dir,
+                                    const char *prefix,
+                                    GError **error);
+-static void update_database (const char *desktop_dir, GError **error);
++static void update_database (const char *desktop_dir, const char *output, GError **error);
+ static const char ** get_default_search_path (void);
+ static void print_desktop_dirs (const char **dirs);
+ 
+@@ -322,7 +322,7 @@ add_mime_type (const char *mime_type, GList *desktop_files, FILE *f)
+ }
+ 
+ static void
+-sync_database (const char *dir, GError **error)
++sync_database (const char *dir, const char *output, GError **error)
+ {
+   GError *sync_error;
+   char *temp_cache_file, *cache_file;
+@@ -352,7 +352,11 @@ sync_database (const char *dir, GError **error)
+   g_list_free (keys);
+   fclose (tmp_file);
+ 
+-  cache_file = g_build_filename (dir, CACHE_FILENAME, NULL);
++  if (output != NULL)
++      cache_file = g_build_filename (output, "applications", CACHE_FILENAME, NULL);
++  else
++      cache_file = g_build_filename (dir, CACHE_FILENAME, NULL);
++
+   if (rename (temp_cache_file, cache_file) < 0)
+     {
+       g_set_error (error, G_FILE_ERROR,
+@@ -368,6 +372,7 @@ sync_database (const char *dir, GError **error)
+ 
+ static void
+ update_database (const char  *desktop_dir,
++                 const char *output,
+                  GError     **error)
+ {
+   GError *update_error;
+@@ -383,7 +388,7 @@ update_database (const char  *desktop_dir,
+     g_propagate_error (error, update_error);
+   else
+     {
+-      sync_database (desktop_dir, &update_error);
++      sync_database (desktop_dir, output, &update_error);
+       if (update_error != NULL)
+         g_propagate_error (error, update_error);
+     }
+@@ -432,6 +437,7 @@ main (int    argc,
+   GError *error;
+   GOptionContext *context;
+   const char **desktop_dirs;
++  const char *output;
+   int i;
+   gboolean found_processable_dir;
+ 
+@@ -445,6 +451,10 @@ main (int    argc,
+        N_("Display more information about processing and updating progress"),
+        NULL},
+ 
++     { "output", 'o', 0, G_OPTION_ARG_STRING, &output,
++       N_("Folder to write cache file"),
++       NULL},
++
+      { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &desktop_dirs,
+        NULL, N_("[DIRECTORY...]") },
+      { NULL }
+@@ -455,6 +465,7 @@ main (int    argc,
+   g_option_context_add_main_entries (context, options, NULL);
+ 
+   desktop_dirs = NULL;
++  output = NULL;
+   error = NULL;
+   g_option_context_parse (context, &argc, &argv, &error);
+ 
+@@ -474,7 +485,7 @@ main (int    argc,
+   for (i = 0; desktop_dirs[i] != NULL; i++)
+     {
+       error = NULL;
+-      update_database (desktop_dirs[i], &error);
++      update_database (desktop_dirs[i], output, &error);
+ 
+       if (error != NULL)
+         {
+-- 
+2.18.0
+

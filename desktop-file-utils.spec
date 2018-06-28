@@ -4,15 +4,17 @@
 #
 Name     : desktop-file-utils
 Version  : 0.23
-Release  : 9
+Release  : 10
 URL      : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz
 Source0  : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-2.0
 Requires: desktop-file-utils-bin
-Requires: desktop-file-utils-doc
+Requires: desktop-file-utils-license
+Requires: desktop-file-utils-man
 BuildRequires : pkgconfig(glib-2.0)
+Patch1: 0001-update-desktop-database-add-output-option.patch
 
 %description
 desktop-file-utils
@@ -22,35 +24,54 @@ http://www.freedesktop.org/wiki/Software/desktop-file-utils
 %package bin
 Summary: bin components for the desktop-file-utils package.
 Group: Binaries
+Requires: desktop-file-utils-license
+Requires: desktop-file-utils-man
 
 %description bin
 bin components for the desktop-file-utils package.
 
 
-%package doc
-Summary: doc components for the desktop-file-utils package.
-Group: Documentation
+%package license
+Summary: license components for the desktop-file-utils package.
+Group: Default
 
-%description doc
-doc components for the desktop-file-utils package.
+%description license
+license components for the desktop-file-utils package.
+
+
+%package man
+Summary: man components for the desktop-file-utils package.
+Group: Default
+
+%description man
+man components for the desktop-file-utils package.
 
 
 %prep
 %setup -q -n desktop-file-utils-0.23
+%patch1 -p1
 
 %build
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost,127.0.0.1,0.0.0.0
+export LANG=C
+export SOURCE_DATE_EPOCH=1530223983
 %configure --disable-static
-make V=1  %{?_smp_mflags}
+make  %{?_smp_mflags}
 
 %check
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
+export SOURCE_DATE_EPOCH=1530223983
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/doc/desktop-file-utils
+cp COPYING %{buildroot}/usr/share/doc/desktop-file-utils/COPYING
 %make_install
 
 %files
@@ -63,6 +84,13 @@ rm -rf %{buildroot}
 /usr/bin/desktop-file-validate
 /usr/bin/update-desktop-database
 
-%files doc
+%files license
 %defattr(-,root,root,-)
-%doc /usr/share/man/man1/*
+/usr/share/doc/desktop-file-utils/COPYING
+
+%files man
+%defattr(-,root,root,-)
+/usr/share/man/man1/desktop-file-edit.1
+/usr/share/man/man1/desktop-file-install.1
+/usr/share/man/man1/desktop-file-validate.1
+/usr/share/man/man1/update-desktop-database.1
