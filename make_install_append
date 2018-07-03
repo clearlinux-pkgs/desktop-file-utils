@@ -1,0 +1,2 @@
+mkdir -p %{buildroot}/usr/lib/systemd/system/update-triggers.target.wants/
+ln -s ../mime-update.service %{buildroot}/usr/lib/systemd/system/update-triggers.target.wants/mime-update.service

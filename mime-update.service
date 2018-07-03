@@ -1,0 +1,8 @@
+[Unit]
+Description=Update mimetype cache
+BindsTo=update-triggers.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/update-desktop-database -o /var/cache/
+
