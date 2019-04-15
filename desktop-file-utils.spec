@@ -6,7 +6,7 @@
 #
 Name     : desktop-file-utils
 Version  : 0.23
-Release  : 11
+Release  : 12
 URL      : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz
 Source0  : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz
 Source1  : desktop-file-utils.tmpfiles
@@ -15,12 +15,16 @@ Source99 : http://www.freedesktop.org/software/desktop-file-utils/releases/deskt
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-2.0
-Requires: desktop-file-utils-bin
-Requires: desktop-file-utils-config
-Requires: desktop-file-utils-license
-Requires: desktop-file-utils-man
+Requires: desktop-file-utils-bin = %{version}-%{release}
+Requires: desktop-file-utils-config = %{version}-%{release}
+Requires: desktop-file-utils-data = %{version}-%{release}
+Requires: desktop-file-utils-license = %{version}-%{release}
+Requires: desktop-file-utils-man = %{version}-%{release}
+Requires: desktop-file-utils-services = %{version}-%{release}
 BuildRequires : pkgconfig(glib-2.0)
+BuildRequires : xemacs
 Patch1: 0001-update-desktop-database-add-output-option.patch
+Patch2: 0002-Add-font-as-valid-media-type.patch
 
 %description
 desktop-file-utils
@@ -30,9 +34,10 @@ http://www.freedesktop.org/wiki/Software/desktop-file-utils
 %package bin
 Summary: bin components for the desktop-file-utils package.
 Group: Binaries
-Requires: desktop-file-utils-config
-Requires: desktop-file-utils-license
-Requires: desktop-file-utils-man
+Requires: desktop-file-utils-data = %{version}-%{release}
+Requires: desktop-file-utils-config = %{version}-%{release}
+Requires: desktop-file-utils-license = %{version}-%{release}
+Requires: desktop-file-utils-services = %{version}-%{release}
 
 %description bin
 bin components for the desktop-file-utils package.
@@ -44,6 +49,14 @@ Group: Default
 
 %description config
 config components for the desktop-file-utils package.
+
+
+%package data
+Summary: data components for the desktop-file-utils package.
+Group: Data
+
+%description data
+data components for the desktop-file-utils package.
 
 
 %package license
@@ -62,16 +75,26 @@ Group: Default
 man components for the desktop-file-utils package.
 
 
+%package services
+Summary: services components for the desktop-file-utils package.
+Group: Systemd services
+
+%description services
+services components for the desktop-file-utils package.
+
+
 %prep
 %setup -q -n desktop-file-utils-0.23
 %patch1 -p1
+%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1530659929
+export SOURCE_DATE_EPOCH=1555370806
+export LDFLAGS="${LDFLAGS} -fno-lto"
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -83,19 +106,19 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1530659929
+export SOURCE_DATE_EPOCH=1555370806
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/desktop-file-utils
-cp COPYING %{buildroot}/usr/share/doc/desktop-file-utils/COPYING
+mkdir -p %{buildroot}/usr/share/package-licenses/desktop-file-utils
+cp COPYING %{buildroot}/usr/share/package-licenses/desktop-file-utils/COPYING
 %make_install
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 0644 %{SOURCE2} %{buildroot}/usr/lib/systemd/system/mime-update.service
 mkdir -p %{buildroot}/usr/lib/tmpfiles.d
 install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/tmpfiles.d/desktop-file-utils.conf
-## make_install_append content
+## install_append content
 mkdir -p %{buildroot}/usr/lib/systemd/system/update-triggers.target.wants/
 ln -s ../mime-update.service %{buildroot}/usr/lib/systemd/system/update-triggers.target.wants/mime-update.service
-## make_install_append end
+## install_append end
 
 %files
 %defattr(-,root,root,-)
@@ -109,17 +132,25 @@ ln -s ../mime-update.service %{buildroot}/usr/lib/systemd/system/update-triggers
 
 %files config
 %defattr(-,root,root,-)
-/usr/lib/systemd/system/mime-update.service
-/usr/lib/systemd/system/update-triggers.target.wants/mime-update.service
 /usr/lib/tmpfiles.d/desktop-file-utils.conf
 
-%files license
+%files data
 %defattr(-,root,root,-)
-/usr/share/doc/desktop-file-utils/COPYING
+/usr/share/emacs/site-lisp/desktop-entry-mode.el
+/usr/share/emacs/site-lisp/desktop-entry-mode.elc
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/desktop-file-utils/COPYING
 
 %files man
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 /usr/share/man/man1/desktop-file-edit.1
 /usr/share/man/man1/desktop-file-install.1
 /usr/share/man/man1/desktop-file-validate.1
 /usr/share/man/man1/update-desktop-database.1
+
+%files services
+%defattr(-,root,root,-)
+/usr/lib/systemd/system/mime-update.service
+/usr/lib/systemd/system/update-triggers.target.wants/mime-update.service

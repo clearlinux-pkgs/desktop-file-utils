@@ -1,7 +1,7 @@
-From 7878357ecd3a17d07b174101a10f73432b2dd987 Mon Sep 17 00:00:00 2001
+From eba8efc9229c8deb7cbacf3b23eda2f6d4e23ca6 Mon Sep 17 00:00:00 2001
 From: Josue David Hernandez <josue.d.hernandez.gutierrez@intel.com>
 Date: Thu, 28 Jun 2018 16:37:06 -0500
-Subject: [PATCH] update-desktop-database: add output option
+Subject: [PATCH 1/2] update-desktop-database: add output option
 
 add output option to set the cache file in another folder
 
@@ -108,5 +108,5 @@ index 7f48357..39c1106 100644
        if (error != NULL)
          {
 -- 
-2.18.0
+2.21.0
 
