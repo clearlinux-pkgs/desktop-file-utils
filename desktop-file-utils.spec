@@ -6,13 +6,13 @@
 #
 Name     : desktop-file-utils
 Version  : 0.23
-Release  : 12
+Release  : 13
 URL      : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz
 Source0  : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz
 Source1  : desktop-file-utils.tmpfiles
 Source2  : mime-update.service
 Source99 : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz.asc
-Summary  : No detailed summary available
+Summary  : Command line utilities for working with desktop entries
 Group    : Development/Tools
 License  : GPL-2.0
 Requires: desktop-file-utils-bin = %{version}-%{release}
@@ -93,8 +93,14 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1555370806
-export LDFLAGS="${LDFLAGS} -fno-lto"
+export SOURCE_DATE_EPOCH=1557083644
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -106,7 +112,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1555370806
+export SOURCE_DATE_EPOCH=1557083644
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/desktop-file-utils
 cp COPYING %{buildroot}/usr/share/package-licenses/desktop-file-utils/COPYING
