@@ -1,18 +1,1 @@
 # This file contains recursive sources that require this package
-blender
-darktable
-geoclue
-gimp
-glib
-gnome-logs
-gnome-music
-gnome-photos
-gnome-terminal
-gtkwave
-gvim
-hexchat
-nautilus
-usermode
-vlc
-xlog
-xterm
