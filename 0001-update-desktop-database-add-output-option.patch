@@ -1,7 +1,7 @@
-From eba8efc9229c8deb7cbacf3b23eda2f6d4e23ca6 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Josue David Hernandez <josue.d.hernandez.gutierrez@intel.com>
 Date: Thu, 28 Jun 2018 16:37:06 -0500
-Subject: [PATCH 1/2] update-desktop-database: add output option
+Subject: [PATCH] update-desktop-database: add output option
 
 add output option to set the cache file in another folder
 
@@ -11,7 +11,7 @@ Signed-off-by: Josue David Hernandez <josue.d.hernandez.gutierrez@intel.com>
  1 file changed, 17 insertions(+), 6 deletions(-)
 
 diff --git a/src/update-desktop-database.c b/src/update-desktop-database.c
-index 7f48357..39c1106 100644
+index b1bca9c..8043515 100644
 --- a/src/update-desktop-database.c
 +++ b/src/update-desktop-database.c
 @@ -50,7 +50,7 @@ static FILE *open_temp_cache_file (const char  *dir,
@@ -32,7 +32,7 @@ index 7f48357..39c1106 100644
  static const char ** get_default_search_path (void);
  static void print_desktop_dirs (const char **dirs);
  
-@@ -322,7 +322,7 @@ add_mime_type (const char *mime_type, GList *desktop_files, FILE *f)
+@@ -323,7 +323,7 @@ add_mime_type (const char *mime_type, GList *desktop_files, FILE *f)
  }
  
  static void
@@ -41,7 +41,7 @@ index 7f48357..39c1106 100644
  {
    GError *sync_error;
    char *temp_cache_file, *cache_file;
-@@ -352,7 +352,11 @@ sync_database (const char *dir, GError **error)
+@@ -353,7 +353,11 @@ sync_database (const char *dir, GError **error)
    g_list_free (keys);
    fclose (tmp_file);
  
@@ -54,7 +54,7 @@ index 7f48357..39c1106 100644
    if (rename (temp_cache_file, cache_file) < 0)
      {
        g_set_error (error, G_FILE_ERROR,
-@@ -368,6 +372,7 @@ sync_database (const char *dir, GError **error)
+@@ -369,6 +373,7 @@ sync_database (const char *dir, GError **error)
  
  static void
  update_database (const char  *desktop_dir,
@@ -62,7 +62,7 @@ index 7f48357..39c1106 100644
                   GError     **error)
  {
    GError *update_error;
-@@ -383,7 +388,7 @@ update_database (const char  *desktop_dir,
+@@ -384,7 +389,7 @@ update_database (const char  *desktop_dir,
      g_propagate_error (error, update_error);
    else
      {
@@ -71,7 +71,7 @@ index 7f48357..39c1106 100644
        if (update_error != NULL)
          g_propagate_error (error, update_error);
      }
-@@ -432,6 +437,7 @@ main (int    argc,
+@@ -433,6 +438,7 @@ main (int    argc,
    GError *error;
    GOptionContext *context;
    const char **desktop_dirs;
@@ -79,7 +79,7 @@ index 7f48357..39c1106 100644
    int i;
    gboolean found_processable_dir;
  
-@@ -445,6 +451,10 @@ main (int    argc,
+@@ -446,6 +452,10 @@ main (int    argc,
         N_("Display more information about processing and updating progress"),
         NULL},
  
@@ -90,7 +90,7 @@ index 7f48357..39c1106 100644
       { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &desktop_dirs,
         NULL, N_("[DIRECTORY...]") },
       { NULL }
-@@ -455,6 +465,7 @@ main (int    argc,
+@@ -463,6 +473,7 @@ main (int    argc,
    g_option_context_add_main_entries (context, options, NULL);
  
    desktop_dirs = NULL;
@@ -98,7 +98,7 @@ index 7f48357..39c1106 100644
    error = NULL;
    g_option_context_parse (context, &argc, &argv, &error);
  
-@@ -474,7 +485,7 @@ main (int    argc,
+@@ -482,7 +493,7 @@ main (int    argc,
    for (i = 0; desktop_dirs[i] != NULL; i++)
      {
        error = NULL;
@@ -107,6 +107,3 @@ index 7f48357..39c1106 100644
  
        if (error != NULL)
          {
--- 
-2.21.0
-

@@ -5,24 +5,24 @@
 # Source0 file verified with key 0xC76BB9FEEAD12EA7 (hpj@cl.no)
 #
 Name     : desktop-file-utils
-Version  : 0.23
-Release  : 14
-URL      : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz
-Source0  : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz
+Version  : 0.24
+Release  : 15
+URL      : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.24.tar.xz
+Source0  : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.24.tar.xz
 Source1  : desktop-file-utils.tmpfiles
 Source2  : mime-update.service
-Source99 : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.23.tar.xz.asc
+Source3 : http://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.24.tar.xz.asc
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-2.0
 Requires: desktop-file-utils-bin = %{version}-%{release}
 Requires: desktop-file-utils-config = %{version}-%{release}
+Requires: desktop-file-utils-data = %{version}-%{release}
 Requires: desktop-file-utils-license = %{version}-%{release}
 Requires: desktop-file-utils-man = %{version}-%{release}
 Requires: desktop-file-utils-services = %{version}-%{release}
 BuildRequires : pkgconfig(glib-2.0)
 Patch1: 0001-update-desktop-database-add-output-option.patch
-Patch2: 0002-Add-font-as-valid-media-type.patch
 
 %description
 desktop-file-utils
@@ -32,6 +32,7 @@ http://www.freedesktop.org/wiki/Software/desktop-file-utils
 %package bin
 Summary: bin components for the desktop-file-utils package.
 Group: Binaries
+Requires: desktop-file-utils-data = %{version}-%{release}
 Requires: desktop-file-utils-config = %{version}-%{release}
 Requires: desktop-file-utils-license = %{version}-%{release}
 Requires: desktop-file-utils-services = %{version}-%{release}
@@ -46,6 +47,14 @@ Group: Default
 
 %description config
 config components for the desktop-file-utils package.
+
+
+%package data
+Summary: data components for the desktop-file-utils package.
+Group: Data
+
+%description data
+data components for the desktop-file-utils package.
 
 
 %package license
@@ -73,16 +82,15 @@ services components for the desktop-file-utils package.
 
 
 %prep
-%setup -q -n desktop-file-utils-0.23
+%setup -q -n desktop-file-utils-0.24
 %patch1 -p1
-%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1558376549
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1564175880
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -95,14 +103,14 @@ export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1558376549
+export SOURCE_DATE_EPOCH=1564175880
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/desktop-file-utils
 cp COPYING %{buildroot}/usr/share/package-licenses/desktop-file-utils/COPYING
@@ -129,6 +137,10 @@ ln -s ../mime-update.service %{buildroot}/usr/lib/systemd/system/update-triggers
 %files config
 %defattr(-,root,root,-)
 /usr/lib/tmpfiles.d/desktop-file-utils.conf
+
+%files data
+%defattr(-,root,root,-)
+/usr/share/emacs/site-lisp/desktop-entry-mode.el
 
 %files license
 %defattr(0644,root,root,0755)
