@@ -6,7 +6,7 @@
 #
 Name     : desktop-file-utils
 Version  : 0.26
-Release  : 16
+Release  : 17
 URL      : https://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.26.tar.xz
 Source0  : https://www.freedesktop.org/software/desktop-file-utils/releases/desktop-file-utils-0.26.tar.xz
 Source1  : desktop-file-utils.tmpfiles
