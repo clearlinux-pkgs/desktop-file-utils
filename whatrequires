@@ -1,19 +1,24 @@
 # This file contains recursive sources that require this package
 blender
 darktable
+fsearch
 geoclue
 gimp
 glib
+gnome-clocks
+gnome-contacts
 gnome-logs
 gnome-music
 gnome-photos
 gnome-terminal
+gpaste
 gtkwave
 gvim
 hexchat
+lutris
 nautilus
-tilix
-usermode
+system-config-printer
+virt-viewer
 vlc
 xlog
 xterm
